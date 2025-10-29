@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -271,21 +270,28 @@
     </div>
 
     <div class="signup-body">
-        <!-- Display error messages -->
-        <c:if test="${not empty error}">
+        <%
+            // Retrieve messages from request (or session if needed)
+            String error = (String) request.getAttribute("error");
+            String success = (String) request.getAttribute("success");
+        %>
+
+        <!-- Display error message -->
+        <% if (error != null && !error.isEmpty()) { %>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle"></i> ${error}
+                <i class="fas fa-exclamation-circle"></i> <%= error %>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-        </c:if>
+        <% } %>
 
         <!-- Display success message -->
-        <c:if test="${not empty success}">
+        <% if (success != null && !success.isEmpty()) { %>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle"></i> ${success}
+                <i class="fas fa-check-circle"></i> <%= success %>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-        </c:if>
+        <% } %>
+
 
         <form action="${pageContext.request.contextPath}/signup" method="POST" id="signupForm">
 
