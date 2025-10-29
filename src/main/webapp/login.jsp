@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -227,26 +226,32 @@
 <body>
 <div class="login-container">
     <div class="login-header">
-        <h1><i class="fas fa-play-circle"></i> StreamFlix</h1>
+        <h1><i class="fas fa-play-circle"></i> Wovies</h1>
         <p>Welcome back! Please login to your account</p>
     </div>
 
     <div class="login-body">
-        <!-- Display error message from session -->
-        <c:if test="${not empty error}">
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle"></i> ${error}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        </c:if>
+        <%
+            String error = (String) request.getAttribute("error");
+            String success = (String) request.getAttribute("success");
+        %>
 
-        <!-- Display success message (e.g., after signup) -->
-        <c:if test="${not empty success}">
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle"></i> ${success}
+        <!-- Display error message -->
+        <% if (error != null && !error.isEmpty()) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle"></i> <%= error %>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-        </c:if>
+        <% } %>
+
+        <!-- Display success message -->
+        <% if (success != null && !success.isEmpty()) { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i> <%= success %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <% } %>
+
 
         <form action="${pageContext.request.contextPath}/login" method="POST">
 
@@ -301,7 +306,7 @@
         </div>
 
         <div class="signup-link">
-            Don't have an account? <a href="${pageContext.request.contextPath}/signup.jsp">Sign Up Now</a>
+            Don't have an account? <a href="./sign-up">Sign Up Now</a>
         </div>
     </div>
 </div>
