@@ -9,7 +9,7 @@
 %>
 <html>
 <head>
-    <title>Wovies - My History</title>
+    <title>Wovies - My Watchlist</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
@@ -157,17 +157,51 @@
 
         .page-header {
             margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+
+        .header-left {
+            flex: 1;
         }
 
         .page-title {
             font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .title-icon {
+            color: #e50914;
         }
 
         .page-subtitle {
             color: #888;
             font-size: 1rem;
+        }
+
+        .stats-box {
+            background: linear-gradient(135deg, rgba(229, 9, 20, 0.1) 0%, rgba(229, 9, 20, 0.05) 100%);
+            border: 1px solid rgba(229, 9, 20, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #e50914;
+            margin-bottom: 0.25rem;
+        }
+
+        .stats-label {
+            color: #888;
+            font-size: 0.9rem;
         }
 
         .filter-bar {
@@ -213,183 +247,164 @@
             color: #e50914;
         }
 
-        .btn-clear-history {
-            background: rgba(220, 53, 69, 0.1);
-            border: 1px solid rgba(220, 53, 69, 0.3);
-            color: #dc3545;
-            padding: 0.5rem 1.25rem;
+        .sort-dropdown {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 0.5rem 1rem;
             border-radius: 20px;
             font-size: 0.9rem;
-            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
-        .btn-clear-history:hover {
-            background: #dc3545;
-            color: #fff;
+        .sort-dropdown:focus {
+            outline: none;
+            border-color: #e50914;
         }
 
-        .history-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
+        .sort-dropdown option {
+            background: #1a1a1a;
         }
 
-        .history-item {
-            background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(20, 20, 20, 0.9) 100%);
-            backdrop-filter: blur(10px);
+        .favourites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .favourite-card {
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 12px;
-            padding: 1.5rem;
-            display: flex;
-            gap: 1.5rem;
+            overflow: hidden;
             transition: all 0.3s ease;
-            cursor: pointer;
+            position: relative;
         }
 
-        .history-item:hover {
+        .favourite-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
             border-color: rgba(229, 9, 20, 0.5);
-            transform: translateX(5px);
         }
 
-        .history-thumbnail {
-            width: 200px;
-            min-width: 200px;
-            aspect-ratio: 16/9;
+        .card-poster {
+            width: 100%;
+            aspect-ratio: 2/3;
             background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
-            border-radius: 8px;
             position: relative;
             overflow: hidden;
         }
 
-        .progress-overlay {
+        .favourite-badge {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .progress-bar-custom {
-            height: 100%;
-            background: #e50914;
-            transition: width 0.3s ease;
-        }
-
-        .play-icon-small {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 50px;
-            height: 50px;
-            background: rgba(229, 9, 20, 0.9);
+            top: 0.75rem;
+            right: 0.75rem;
+            width: 40px;
+            height: 40px;
+            background: rgba(229, 9, 20, 0.95);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 1.1rem;
             color: #fff;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            z-index: 10;
         }
 
-        .history-item:hover .play-icon-small {
+        .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1.5rem;
+        }
+
+        .favourite-card:hover .card-overlay {
             opacity: 1;
         }
 
-        .history-details {
+        .overlay-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-overlay {
             flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .history-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-        }
-
-        .history-title {
-            font-size: 1.25rem;
+            padding: 0.75rem;
+            border-radius: 6px;
+            border: none;
             font-weight: 600;
-            color: #fff;
-            margin-bottom: 0.25rem;
-        }
-
-        .history-meta {
-            display: flex;
-            gap: 1rem;
-            font-size: 0.9rem;
-            color: #888;
-        }
-
-        .history-meta span {
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 0.25rem;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
         }
 
-        .history-description {
-            color: #b3b3b3;
-            font-size: 0.95rem;
-            line-height: 1.5;
+        .btn-play-overlay {
+            background: #e50914;
+            color: #fff;
+        }
+
+        .btn-play-overlay:hover {
+            background: #ff2a2a;
+        }
+
+        .btn-remove-overlay {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .btn-remove-overlay:hover {
+            background: rgba(220, 53, 69, 0.8);
+        }
+
+        .card-info {
+            padding: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #fff;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
 
-        .history-actions {
+        .card-meta {
             display: flex;
             gap: 0.75rem;
-            margin-top: auto;
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
         }
 
-        .btn-continue {
-            background: rgba(229, 9, 20, 0.2);
-            border: 1px solid rgba(229, 9, 20, 0.3);
-            color: #e50914;
-            padding: 0.5rem 1.5rem;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .card-rating {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.25rem;
+            color: #ffc107;
         }
 
-        .btn-continue:hover {
-            background: #e50914;
-            color: #fff;
-        }
-
-        .btn-remove {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #888;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-remove:hover {
-            background: rgba(220, 53, 69, 0.2);
-            border-color: rgba(220, 53, 69, 0.3);
-            color: #dc3545;
-        }
-
-        .watched-date {
-            font-size: 0.85rem;
+        .added-date {
+            font-size: 0.8rem;
             color: #666;
+            margin-top: 0.5rem;
         }
 
         .empty-state {
@@ -447,12 +462,18 @@
                 width: 180px;
             }
 
-            .history-item {
+            .page-header {
                 flex-direction: column;
+                gap: 1.5rem;
             }
 
-            .history-thumbnail {
+            .stats-box {
                 width: 100%;
+            }
+
+            .favourites-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 1rem;
             }
 
             .filter-bar {
@@ -474,8 +495,8 @@
                     <div class="logo" onclick="window.location.href='home'">WOVIES</div>
                     <ul class="nav-links">
                         <li><a href="home">Home</a></li>
-                        <li><a href="history" class="active">myHistory</a></li>
-                        <li><a href="watchlist">myWatchList</a></li>
+                        <li><a href="history">myHistory</a></li>
+                        <li><a href="watchlist" class="active">myWatchList</a></li>
                         <li><a href="suggestions">browseSuggestions</a></li>
                     </ul>
                 </div>
@@ -495,52 +516,67 @@
 
     <div class="container content-wrapper">
         <div class="page-header">
-            <h1 class="page-title">My Watch History</h1>
-            <p class="page-subtitle">Track all the movies and series you've watched</p>
+            <div class="header-left">
+                <h1 class="page-title">
+                    <i class="bi bi-bookmark-fill title-icon"></i>
+                    My Watchlist
+                </h1>
+                <p class="page-subtitle">Movies and series you want to watch later</p>
+            </div>
+            <div class="stats-box">
+                <div class="stats-number" id="totalFavourites">0</div>
+                <div class="stats-label">In Watchlist</div>
+            </div>
         </div>
 
         <div class="filter-bar">
             <div class="filter-left">
-                <button class="filter-btn active" onclick="filterHistory('all')">All</button>
-                <button class="filter-btn" onclick="filterHistory('movies')">Movies</button>
-                <button class="filter-btn" onclick="filterHistory('series')">Series</button>
-                <button class="filter-btn" onclick="filterHistory('week')">This Week</button>
-                <button class="filter-btn" onclick="filterHistory('month')">This Month</button>
+                <button class="filter-btn active" onclick="filterFavourites('all')">All</button>
+                <button class="filter-btn" onclick="filterFavourites('movies')">Movies</button>
+                <button class="filter-btn" onclick="filterFavourites('series')">Series</button>
+                <button class="filter-btn" onclick="filterFavourites('unwatched')">Unwatched</button>
             </div>
-            <button class="btn-clear-history" onclick="clearAllHistory()">
-                <i class="bi bi-trash"></i>
-                Clear History
-            </button>
+            <select class="sort-dropdown" id="sortSelect" onchange="sortFavourites()">
+                <option value="recent">Recently Added</option>
+                <option value="title">Title (A-Z)</option>
+                <option value="rating">Highest Rated</option>
+                <option value="year">Newest First</option>
+            </select>
         </div>
 
-        <div class="history-list" id="historyList">
-            <!-- History items will be loaded here -->
+        <div class="favourites-grid" id="favouritesGrid">
+            <!-- Favourite cards will be loaded here -->
         </div>
 
         <div class="empty-state" id="emptyState" style="display: none;">
             <div class="empty-icon">
-                <i class="bi bi-clock-history"></i>
+                <i class="bi bi-bookmark"></i>
             </div>
-            <h2 class="empty-title">No Watch History</h2>
-            <p class="empty-text">Start watching movies and series to see your history here</p>
-            <a href="home" class="btn-browse">Browse Content</a>
+            <h2 class="empty-title">Your Watchlist is Empty</h2>
+            <p class="empty-text">Start adding movies and series you want to watch later</p>
+            <a href="home" class="btn-browse">Discover Content</a>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Sample watch history data
-        var historyData = [
+        // Sample favourites data
+        var favouritesData = [
             {
                 id: 1,
                 title: "Stranger Things",
                 type: "series",
                 year: 2023,
                 rating: 8.7,
-                progress: 65,
-                watchedDate: "2024-10-28",
-                episode: "S1E5",
-                description: "When a young boy vanishes, a small town uncovers a mystery involving secret experiments, terrifying supernatural forces and one strange little girl."
+                addedDate: "2024-10-25"
+            },
+            {
+                id: 3,
+                title: "Breaking Bad",
+                type: "series",
+                year: 2008,
+                rating: 9.5,
+                addedDate: "2024-10-20"
             },
             {
                 id: 2,
@@ -548,131 +584,122 @@
                 type: "movie",
                 year: 2023,
                 rating: 8.4,
-                progress: 100,
-                watchedDate: "2024-10-27",
-                duration: "3h 0m",
-                description: "The story of American scientist J. Robert Oppenheimer and his role in the development of the atomic bomb."
+                addedDate: "2024-10-18"
             },
             {
-                id: 3,
-                title: "The Last of Us",
+                id: 7,
+                title: "The Crown",
                 type: "series",
-                year: 2023,
-                rating: 8.9,
-                progress: 45,
-                watchedDate: "2024-10-26",
-                episode: "S1E3",
-                description: "After a global pandemic destroys civilization, a hardened survivor takes charge of a 14-year-old girl who may be humanity's last hope."
+                year: 2016,
+                rating: 8.6,
+                addedDate: "2024-10-15"
             },
             {
-                id: 4,
-                title: "The Batman",
+                id: 13,
+                title: "Dune",
+                type: "movie",
+                year: 2021,
+                rating: 8.0,
+                addedDate: "2024-10-12"
+            },
+            {
+                id: 10,
+                title: "House of the Dragon",
+                type: "series",
+                year: 2022,
+                rating: 8.5,
+                addedDate: "2024-10-10"
+            },
+            {
+                id: 14,
+                title: "Top Gun: Maverick",
                 type: "movie",
                 year: 2022,
-                rating: 7.8,
-                progress: 100,
-                watchedDate: "2024-10-25",
-                duration: "2h 56m",
-                description: "When a sadistic serial killer begins murdering key political figures in Gotham, Batman is forced to investigate the city's hidden corruption."
+                rating: 8.3,
+                addedDate: "2024-10-08"
             },
             {
-                id: 5,
-                title: "Breaking Bad",
+                id: 8,
+                title: "Better Call Saul",
                 type: "series",
-                year: 2008,
-                rating: 9.5,
-                progress: 80,
-                watchedDate: "2024-10-24",
-                episode: "S3E10",
-                description: "A chemistry teacher diagnosed with cancer teams with a former student to manufacture methamphetamine to provide for his family."
+                year: 2015,
+                rating: 9.0,
+                addedDate: "2024-10-05"
             }
         ];
 
         var currentFilter = 'all';
+        var currentSort = 'recent';
 
         function formatDate(dateString) {
             var date = new Date(dateString);
-            var today = new Date();
-            var yesterday = new Date(today);
-            yesterday.setDate(yesterday.getDate() - 1);
-
-            if (date.toDateString() === today.toDateString()) {
-                return 'Today';
-            } else if (date.toDateString() === yesterday.toDateString()) {
-                return 'Yesterday';
-            } else {
-                var options = { month: 'short', day: 'numeric', year: 'numeric' };
-                return date.toLocaleDateString('en-US', options);
-            }
+            var options = { month: 'short', day: 'numeric', year: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
         }
 
-        function createHistoryItem(item) {
-            var historyItem = document.createElement('div');
-            historyItem.className = 'history-item';
-            historyItem.onclick = function() { continueWatching(item.id); };
+        function createFavouriteCard(item) {
+            var card = document.createElement('div');
+            card.className = 'favourite-card';
 
-            var typeInfo = item.type === 'movie'
-                ? item.duration
-                : item.episode;
+            var typeLabel = item.type === 'movie' ? 'Movie' : 'Series';
 
-            historyItem.innerHTML =
-                '<div class="history-thumbnail">' +
-                    '<div class="play-icon-small">' +
-                        '<i class="bi bi-play-fill"></i>' +
+            card.innerHTML =
+                '<div class="card-poster">' +
+                    '<div class="favourite-badge">' +
+                        '<i class="bi bi-heart-fill"></i>' +
                     '</div>' +
-                    '<div class="progress-overlay">' +
-                        '<div class="progress-bar-custom" style="width: ' + item.progress + '%"></div>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="history-details">' +
-                    '<div class="history-header">' +
-                        '<div>' +
-                            '<h3 class="history-title">' + item.title + '</h3>' +
-                            '<div class="history-meta">' +
-                                '<span><i class="bi bi-calendar"></i> ' + item.year + '</span>' +
-                                '<span><i class="bi bi-star-fill" style="color: #ffc107;"></i> ' + item.rating + '</span>' +
-                                '<span>' + typeInfo + '</span>' +
-                            '</div>' +
+                    '<div class="card-overlay">' +
+                        '<div class="overlay-actions">' +
+                            '<button class="btn-overlay btn-play-overlay" onclick="watchContent(' + item.id + ', event)">' +
+                                '<i class="bi bi-play-fill"></i> Watch' +
+                            '</button>' +
+                            '<button class="btn-overlay btn-remove-overlay" onclick="removeFromFavourites(' + item.id + ', event)">' +
+                                '<i class="bi bi-heart-fill"></i>' +
+                            '</button>' +
                         '</div>' +
                     '</div>' +
-                    '<p class="history-description">' + item.description + '</p>' +
-                    '<div class="watched-date">' +
-                        '<i class="bi bi-clock"></i> Watched ' + formatDate(item.watchedDate) +
-                        ' • ' + item.progress + '% complete' +
+                '</div>' +
+                '<div class="card-info">' +
+                    '<h3 class="card-title">' + item.title + '</h3>' +
+                    '<div class="card-meta">' +
+                        '<span>' + item.year + '</span>' +
+                        '<span>•</span>' +
+                        '<span>' + typeLabel + '</span>' +
                     '</div>' +
-                    '<div class="history-actions">' +
-                        '<button class="btn-continue" onclick="continueWatching(' + item.id + ', event)">' +
-                            '<i class="bi bi-play-circle"></i>' +
-                            (item.progress === 100 ? 'Watch Again' : 'Continue Watching') +
-                        '</button>' +
-                        '<button class="btn-remove" onclick="removeFromHistory(' + item.id + ', event)">' +
-                            '<i class="bi bi-x-circle"></i> Remove' +
-                        '</button>' +
+                    '<div class="card-rating">' +
+                        '<i class="bi bi-star-fill"></i>' +
+                        '<span>' + item.rating + '</span>' +
+                    '</div>' +
+                    '<div class="added-date">' +
+                        'Added ' + formatDate(item.addedDate) +
                     '</div>' +
                 '</div>';
 
-            return historyItem;
+            return card;
         }
 
-        function loadHistory(data) {
-            var historyList = document.getElementById('historyList');
+        function loadFavourites(data) {
+            var favouritesGrid = document.getElementById('favouritesGrid');
             var emptyState = document.getElementById('emptyState');
+            var totalElement = document.getElementById('totalFavourites');
+
+            totalElement.textContent = data.length;
 
             if (data.length === 0) {
-                historyList.style.display = 'none';
+                favouritesGrid.style.display = 'none';
                 emptyState.style.display = 'block';
             } else {
-                historyList.style.display = 'flex';
+                favouritesGrid.style.display = 'grid';
                 emptyState.style.display = 'none';
-                historyList.innerHTML = '';
+                favouritesGrid.innerHTML = '';
 
                 data.forEach(function(item) {
-                    historyList.appendChild(createHistoryItem(item));
+                    favouritesGrid.appendChild(createFavouriteCard(item));
                 });
             }
         }
 
-        function filterHistory(type) {
+        function filterFavourites(type) {
             currentFilter = type;
 
             // Update active filter button
@@ -682,55 +709,66 @@
             });
             event.target.classList.add('active');
 
-            var filtered = historyData;
+            applyFiltersAndSort();
+        }
 
-            if (type === 'movies') {
-                filtered = historyData.filter(function(item) {
+        function sortFavourites() {
+            currentSort = document.getElementById('sortSelect').value;
+            applyFiltersAndSort();
+        }
+
+        function applyFiltersAndSort() {
+            var filtered = favouritesData;
+
+            // Apply filter
+            if (currentFilter === 'movies') {
+                filtered = favouritesData.filter(function(item) {
                     return item.type === 'movie';
                 });
-            } else if (type === 'series') {
-                filtered = historyData.filter(function(item) {
+            } else if (currentFilter === 'series') {
+                filtered = favouritesData.filter(function(item) {
                     return item.type === 'series';
-                });
-            } else if (type === 'week') {
-                var weekAgo = new Date();
-                weekAgo.setDate(weekAgo.getDate() - 7);
-                filtered = historyData.filter(function(item) {
-                    return new Date(item.watchedDate) >= weekAgo;
-                });
-            } else if (type === 'month') {
-                var monthAgo = new Date();
-                monthAgo.setMonth(monthAgo.getMonth() - 1);
-                filtered = historyData.filter(function(item) {
-                    return new Date(item.watchedDate) >= monthAgo;
                 });
             }
 
-            loadHistory(filtered);
+            // Apply sort
+            var sorted = filtered.slice();
+            if (currentSort === 'recent') {
+                sorted.sort(function(a, b) {
+                    return new Date(b.addedDate) - new Date(a.addedDate);
+                });
+            } else if (currentSort === 'title') {
+                sorted.sort(function(a, b) {
+                    return a.title.localeCompare(b.title);
+                });
+            } else if (currentSort === 'rating') {
+                sorted.sort(function(a, b) {
+                    return b.rating - a.rating;
+                });
+            } else if (currentSort === 'year') {
+                sorted.sort(function(a, b) {
+                    return b.year - a.year;
+                });
+            }
+
+            loadFavourites(sorted);
         }
 
-        function continueWatching(id, event) {
-            if (event) event.stopPropagation();
+        function watchContent(id, event) {
+            event.stopPropagation();
             window.location.href = 'watch?id=' + id;
         }
 
-        function removeFromHistory(id, event) {
+        function removeFromFavourites(id, event) {
             event.stopPropagation();
-            if (confirm('Remove this item from your watch history?')) {
-                var index = historyData.findIndex(function(item) {
+            if (confirm('Remove this from your favourites?')) {
+                var index = favouritesData.findIndex(function(item) {
                     return item.id === id;
                 });
                 if (index !== -1) {
-                    historyData.splice(index, 1);
-                    filterHistory(currentFilter);
+                    favouritesData.splice(index, 1);
+                    applyFiltersAndSort();
                 }
-            }
-        }
-
-        function clearAllHistory() {
-            if (confirm('Are you sure you want to clear your entire watch history? This action cannot be undone.')) {
-                historyData = [];
-                loadHistory(historyData);
             }
         }
 
@@ -744,8 +782,8 @@
             }
         });
 
-        // Load initial history
-        loadHistory(historyData);
+        // Load initial favourites
+        loadFavourites(favouritesData);
     </script>
 </body>
 </html>

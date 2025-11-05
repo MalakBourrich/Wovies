@@ -1,4 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page session="true" %>
+<%
+    String email = (String) session.getAttribute("email");
+    if (email == null) {
+        response.sendRedirect("login");
+        return;
+    }
+%>
 <html>
 <head>
     <title>Wovies - Watch</title>
@@ -442,7 +450,7 @@
                     <ul class="nav-links">
                         <li><a href="home">Home</a></li>
                         <li><a href="history">myHistory</a></li>
-                        <li><a href="favourites">myFavourites</a></li>
+                        <li><a href="watchlist">myWatchList</a></li>
                         <li><a href="suggestions">browseSuggestions</a></li>
                     </ul>
                 </div>
@@ -451,7 +459,7 @@
                         <i class="bi bi-search search-icon"></i>
                         <input type="text" class="search-input" placeholder="Search movies & series..." id="searchInput">
                     </div>
-                    <a href="account.jsp" class="btn-account">
+                    <a href="account" class="btn-account">
                         <i class="bi bi-person-circle"></i>
                         <span>Account</span>
                     </a>
@@ -666,7 +674,7 @@
             if (e.key === 'Enter') {
                 const searchTerm = this.value.trim();
                 if (searchTerm) {
-                    window.location.href = 'search.jsp?q=' + encodeURIComponent(searchTerm);
+                    window.location.href = 'search?q=' + encodeURIComponent(searchTerm);
                 }
             }
         });

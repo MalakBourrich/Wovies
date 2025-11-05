@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <html>
 <head>
     <title>Wovies - Sign Up</title>
@@ -441,7 +442,7 @@
                 <div class="terms-checkbox">
                     <input type="checkbox" id="terms" required>
                     <label for="terms">
-                        I agree to the <a href="terms.jsp">Terms of Service</a> and <a href="privacy.jsp">Privacy Policy</a>
+                        I agree to the <a href="terms">Terms of Service</a> and <a href="privacy">Privacy Policy</a>
                     </label>
                 </div>
 
@@ -464,7 +465,7 @@
             </div>
 
             <div class="login-link">
-                Already have an account? <a href="login.jsp">Sign in</a>
+                Already have an account? <a href="login">Sign in</a>
             </div>
         </div>
     </div>
@@ -576,7 +577,7 @@
             console.log('Sign up attempt:', { firstName: firstName, lastName: lastName, email: email, terms: terms });
 
             // Simulate successful signup
-            window.location.href = 'index.jsp';
+            window.location.href = 'index';
 
             return false;
         }
@@ -584,7 +585,7 @@
         function socialSignup(provider) {
             // In a real application, this would initiate OAuth flow
             console.log('Sign up with ' + provider);
-            window.location.href = 'index.jsp';
+            window.location.href = 'index';
         }
     </script>
 </body>
