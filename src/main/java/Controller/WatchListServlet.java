@@ -7,12 +7,11 @@ import jakarta.servlet.ServletException;
 
 import java.io.IOException;
 
-@WebServlet("/sign-up")
-public class SignupServlet extends HttpServlet {
+@WebServlet("/watchlist")
+public class WatchListServlet extends HttpServlet{
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        RequestDispatcher dispatcher = request.getRequestDispatcher("signup.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("watchlist.jsp");
         dispatcher.forward(request, response);
-
     }
 }
