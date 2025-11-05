@@ -1,4 +1,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page session="true" %>
+<%
+    String email = (String) session.getAttribute("email");
+
+    if (email != null) {
+        response.sendRedirect("home");
+        return;
+    }
+%>
 <html>
 <head>
     <title>Wovies - Login</title>
@@ -56,8 +65,8 @@
             font-size: 3.5rem;
             font-weight: 900;
             background: linear-gradient(135deg, #e50914 0%, #ff2a2a 100%);
-            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
             letter-spacing: 2px;
             text-shadow: 0 0 30px rgba(229, 9, 20, 0.3);
             margin-bottom: 0.5rem;
@@ -297,11 +306,6 @@
             color: #ff6b6b;
             font-size: 0.85rem;
             margin-bottom: 1.5rem;
-            display: none;
-        }
-
-        .alert-custom.show {
-            display: block;
         }
 
         @media (max-width: 576px) {
@@ -334,16 +338,22 @@
             <h1 class="login-title">Welcome Back</h1>
             <p class="login-subtitle">Sign in to continue watching</p>
 
-            <div class="alert-custom" id="errorAlert">
-                <i class="bi bi-exclamation-circle"></i> Invalid email or password
-            </div>
+            <% 
+                // Display error message if redirected back
+                String error = (String) request.getAttribute("error");
+                if (error != null) { 
+            %>
+                <div class="alert-custom" id="errorAlert">
+                    <i class="bi bi-exclamation-circle"> <%= error %></i>
+                </div>
+            <% } %> 
 
-            <form id="loginForm" onsubmit="return handleLogin(event)">
+            <form id="loginForm" action="login" method="post" onsubmit="(e)=>e.preventDefault()">
                 <div class="form-group">
                     <label class="form-label">Email Address</label>
                     <div class="input-wrapper">
                         <i class="bi bi-envelope input-icon"></i>
-                        <input type="email" class="form-control-custom" id="email" placeholder="Enter your email" required>
+                        <input type="email" class="form-control-custom" id="email" placeholder="Enter your email" name="email" required>
                     </div>
                 </div>
 
@@ -351,7 +361,7 @@
                     <label class="form-label">Password</label>
                     <div class="input-wrapper">
                         <i class="bi bi-lock input-icon"></i>
-                        <input type="password" class="form-control-custom" id="password" placeholder="Enter your password" required>
+                        <input type="password" class="form-control-custom" id="password" placeholder="Enter your password" name="password" required>
                         <button type="button" class="password-toggle" onclick="togglePassword()">
                             <i class="bi bi-eye" id="toggleIcon"></i>
                         </button>
@@ -360,10 +370,10 @@
 
                 <div class="form-options">
                     <div class="remember-me">
-                        <input type="checkbox" id="rememberMe">
+                        <input type="checkbox" id="rememberMe" name="remember-me">
                         <label for="rememberMe">Remember me</label>
                     </div>
-                    <a href="forgot-password.jsp" class="forgot-link">Forgot password?</a>
+                    <a href="forgot-password" class="forgot-link">Forgot password?</a>
                 </div>
 
                 <button type="submit" class="btn-login">Sign In</button>
@@ -385,7 +395,7 @@
             </div>
 
             <div class="signup-link">
-                Don't have an account? <a href="signup.jsp">Sign up now</a>
+                Don't have an account? <a href="signup">Sign up now</a>
             </div>
         </div>
     </div>
@@ -403,38 +413,7 @@
                 passwordInput.type = 'password';
                 toggleIcon.className = 'bi bi-eye';
             }
-        }
-
-        function handleLogin(event) {
-            event.preventDefault();
-
-            var email = document.getElementById('email').value;
-            var password = document.getElementById('password').value;
-            var rememberMe = document.getElementById('rememberMe').checked;
-
-            // In a real application, you would send this to your backend
-            // For demo purposes, we'll just redirect to the home page
-
-            // Example validation
-            if (email && password) {
-                // Simulate successful login
-                window.location.href = 'index.jsp';
-            } else {
-                // Show error
-                document.getElementById('errorAlert').classList.add('show');
-                setTimeout(function() {
-                    document.getElementById('errorAlert').classList.remove('show');
-                }, 3000);
-            }
-
-            return false;
-        }
-
-        function socialLogin(provider) {
-            // In a real application, this would initiate OAuth flow
-            console.log('Login with ' + provider);
-            // For demo, redirect to home
-            window.location.href = 'index.jsp';
+            
         }
     </script>
 </body>
