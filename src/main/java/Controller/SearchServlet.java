@@ -7,11 +7,11 @@ import jakarta.servlet.ServletException;
 
 import java.io.IOException;
 
-@WebServlet("/watch")
-public class WatchController extends HttpServlet{
+@WebServlet("/search")
+public class SearchServlet extends HttpServlet{
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        RequestDispatcher dispatcher = request.getRequestDispatcher("watch.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/search.jsp");
         dispatcher.forward(request, response);
     }
 }
