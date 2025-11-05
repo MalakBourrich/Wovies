@@ -215,7 +215,6 @@
             const newPass = document.getElementById('newPassword').value;
             const confirm = document.getElementById('confirmPassword').value;
 
-
             if (newPass !== confirm) {
                 alert("Passwords do not match!");
                 return false;

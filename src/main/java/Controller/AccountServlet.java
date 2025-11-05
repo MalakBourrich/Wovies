@@ -10,7 +10,6 @@ import java.io.IOException;
 
 @WebServlet("/account")
 public class AccountServlet extends HttpServlet {
-
     private AccountService accountService;
 
     @Override

@@ -20,15 +20,12 @@
     </properties>
 
     <dependencies>
-        <!-- Jakarta EE API (provided by server like Tomcat or Payara) -->
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
             <version>11.0.0-M3</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- JUnit 5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -117,7 +114,6 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.4.0</version>
             </plugin>
-
             <!-- Tomcat plugin (for local deployment) -->
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
