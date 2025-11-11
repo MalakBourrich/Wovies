@@ -1,0 +1,26 @@
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property
+                name="hibernate.connection.url">jdbc:mysql://localhost:3306/wovies
+        </property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password">M@lak123456</property>
+        <!--  Dialecte MySQL  -->
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
+        <!--  Affichage des requêtes SQL  -->
+        <property name="hibernate.format_sql">true</property>
+        <property name="hibernate.show_sql">true</property>
+        <!--  Création des tables automatiquement  -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+        <!--  Enregistrement des classes entités  -->
+        <!--  exemple  Entités   -->
+        <mapping class="model.Account"/>
+        <mapping class="model.History"/>
+        <mapping class="model.Home"/>
+        <mapping class="model.WatchList"/>
+        <mapping class="model.Video"/>
+        <mapping class="model.Movie"/>
+        <mapping class="model.Server"/>
+    </session-factory>
+</hibernate-configuration>

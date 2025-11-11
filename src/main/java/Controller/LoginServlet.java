@@ -1,37 +1,52 @@
 package Controller;
 
+import Service.AccountService;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
+import model.Account;
 
 import java.io.IOException;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
+    private AccountService accountService ;
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    @Override
+    public void init() throws ServletException {
+        try {
+            accountService = new AccountService();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
+        if (request.getParameter("succes") != null) {
+            request.setAttribute("succes","Account created successfully");
+        }
+
         RequestDispatcher dispatcher = request.getRequestDispatcher("login.jsp");
-
         dispatcher.forward(request, response);
 
     }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        String rememberMe = request.getParameter("remember-me");
+
+        Account account = accountService.login(email, password);
 
 
-
-        // admin login
-        if (email.equals("superadmin") && password.equals("superadmin")) {
-            response.sendRedirect("home");
-        }
-
-        if (email.equals("test@gmail.com") && password.equals("password")) {
+        if (account != null) {
             HttpSession session = request.getSession();
-            session.setAttribute("email", email);
+            session.setAttribute("email", account.getEmail());
+            session.setAttribute("account", account);
+            session.setAttribute("userId", account.getId_user());
             response.sendRedirect("home");
         } else {
             request.setAttribute("error", "Invalid email or password");
@@ -39,4 +54,5 @@ public class LoginServlet extends HttpServlet {
             dispatcher.forward(request, response);
         }
     }
+
 }
