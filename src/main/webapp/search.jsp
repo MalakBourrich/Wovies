@@ -1,9 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page session="true" %>
 <%@ page import="java.util.List" %>
-<%@ page import="Model.Video" %>
-<%@ page import="Model.Movie" %>
-<%@ page import="Model.Series" %>
+<%@ page import="model.Video" %>
+<%@ page import="model.Movie" %>
+<%@ page import="model.Series" %>
 <%@ page import="Service.SearchService" %>
 
 <%
