@@ -1,4 +1,4 @@
-package Controller;
+package controller;
 
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -12,7 +12,6 @@ public class LoginServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         RequestDispatcher dispatcher = request.getRequestDispatcher("login.jsp");
-
         dispatcher.forward(request, response);
 
     }
@@ -20,7 +19,7 @@ public class LoginServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        String rememberMe = request.getParameter("remember-me");
+        // String rememberMe = request.getParameter("remember-me");
 
 
 
@@ -29,7 +28,7 @@ public class LoginServlet extends HttpServlet {
             response.sendRedirect("home");
         }
 
-        if (email.equals("test@gmail.com") && password.equals("password")) {
+        if (email.equals("test@gmail.com") && password.equals("test@gmail.com")) {
             HttpSession session = request.getSession();
             session.setAttribute("email", email);
             response.sendRedirect("home");
