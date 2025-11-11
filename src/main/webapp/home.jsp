@@ -1,3 +1,5 @@
+<%@ page import="com.google.gson.Gson" %>
+<%@ page import="model.Home" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page session="true" %>
 <%
@@ -6,7 +8,7 @@
         response.sendRedirect("login");
         return;
     }
-%>
+    Home home = new Home();%>
 <html>
 <head>
     <title>Wovies - Stream Unlimited</title>
@@ -22,9 +24,8 @@
                     <div class="logo" onclick="window.location.href='home'">WOVIES</div>
                     <ul class="nav-links">
                         <li><a href="home" class="active">Home</a></li>
-                        <li><a href="history">myHistory</a></li>
-                        <li><a href="watchlist">myWatchList</a></li>
-                        <li><a href="suggestions">browseSuggestions</a></li>
+                        <li><a href="history">History</a></li>
+                        <li><a href="watchlist">Watch List</a></li>
                     </ul>
                 </div>
                 <div class="nav-right">
@@ -32,7 +33,7 @@
                         <i class="bi bi-search search-icon"></i>
                         <input type="text" class="search-input" placeholder="Search movies & series..." id="searchInput">
                     </div>
-                    <a href="account" class="btn-account">
+                    <a href="${pageContext.request.contextPath}/account" class="btn-account">
                         <i class="bi bi-person-circle"></i>
                         <span>Account</span>
                     </a>
@@ -91,49 +92,16 @@
         <div class="content-carousel" id="newCarousel"></div>
     </div>
 
-    <div class="container content-section">
-        <div class="section-header">
-            <h2 class="section-title">Continue Watching</h2>
-            <a href="mylist" class="view-all">View All <i class="bi bi-arrow-right"></i></a>
-        </div>
-        <div class="content-carousel" id="continueCarousel"></div>
-    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Sample content data
-        var contentData = {
-            trending: [
-                { id: 1, title: "The Last of Us", year: 2023, rating: 8.9, type: "series" },
-                { id: 2, title: "Oppenheimer", year: 2023, rating: 8.4, type: "movie" },
-                { id: 3, title: "Breaking Bad", year: 2008, rating: 9.5, type: "series" },
-                { id: 4, title: "The Batman", year: 2022, rating: 7.8, type: "movie" },
-                { id: 5, title: "Wednesday", year: 2022, rating: 8.1, type: "series" },
-                { id: 6, title: "Avatar: The Way of Water", year: 2022, rating: 7.6, type: "movie" }
-            ],
-            series: [
-                { id: 7, title: "The Crown", year: 2016, rating: 8.6, type: "series" },
-                { id: 8, title: "Better Call Saul", year: 2015, rating: 9.0, type: "series" },
-                { id: 9, title: "The Mandalorian", year: 2019, rating: 8.7, type: "series" },
-                { id: 10, title: "House of the Dragon", year: 2022, rating: 8.5, type: "series" },
-                { id: 11, title: "The Witcher", year: 2019, rating: 8.0, type: "series" },
-                { id: 12, title: "Stranger Things", year: 2016, rating: 8.7, type: "series" }
-            ],
-            newReleases: [
-                { id: 13, title: "Dune", year: 2021, rating: 8.0, type: "movie" },
-                { id: 14, title: "Top Gun: Maverick", year: 2022, rating: 8.3, type: "movie" },
-                { id: 15, title: "Everything Everywhere", year: 2022, rating: 7.8, type: "movie" },
-                { id: 16, title: "The Menu", year: 2022, rating: 7.2, type: "movie" },
-                { id: 17, title: "Glass Onion", year: 2022, rating: 7.2, type: "movie" },
-                { id: 18, title: "M3GAN", year: 2023, rating: 6.4, type: "movie" }
-            ],
-            continue: [
-                { id: 1, title: "Stranger Things", year: 2023, rating: 8.7, type: "series", progress: 65 },
-                { id: 19, title: "The Night Agent", year: 2023, rating: 7.5, type: "series", progress: 40 },
-                { id: 20, title: "Yellowstone", year: 2018, rating: 8.7, type: "series", progress: 80 },
-                { id: 21, title: "Dark", year: 2017, rating: 8.8, type: "series", progress: 25 }
-            ]
+
+            var contentData = {
+            trending: <%= new Gson().toJson(home.getTrendings()) %>,
+            series: <%= new Gson().toJson(home.getVideos()) %>,
+            newReleases: <%= new Gson().toJson(home.getFeatures()) %>
         };
+
 
         function createContentCard(item) {
             var card = document.createElement('div');
@@ -203,7 +171,6 @@
         loadCarousel('trendingCarousel', contentData.trending);
         loadCarousel('seriesCarousel', contentData.series);
         loadCarousel('newCarousel', contentData.newReleases);
-        loadCarousel('continueCarousel', contentData.continue);
     </script>
 </body>
 </html>
