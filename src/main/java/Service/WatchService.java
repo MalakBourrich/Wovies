@@ -1,8 +1,8 @@
 package Service;
 
 import Utility.Constants;
-import Model.Video;
-import Model.Server;
+import model.Server;
+import model.Video;
 
 import java.io.IOException;
 import java.net.URI;

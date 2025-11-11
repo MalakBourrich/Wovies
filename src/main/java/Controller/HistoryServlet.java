@@ -1,4 +1,4 @@
-package controller;
+package Controller;
 
 import Service.HistoryService;
 import jakarta.servlet.http.*;

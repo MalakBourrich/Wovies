@@ -1,12 +1,12 @@
-package controller;
+package Controller;
 
-import Model.Video;
-import Model.WatchListItem;
 import Service.SearchService;
 import Service.WatchListService;
 import java.io.IOException;
 import java.util.List;
 import jakarta.servlet.http.*;
+import model.Video;
+import model.WatchListItem;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.*;
 

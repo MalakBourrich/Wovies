@@ -1,11 +1,11 @@
-package controller;
+package Controller;
 
-import Model.Video;
 import Service.SearchService;
 import java.io.IOException;
 import java.util.List;
 
 import jakarta.servlet.http.*;
+import model.Video;
 import jakarta.servlet.annotation.*;
 import jakarta.servlet.ServletException;
 

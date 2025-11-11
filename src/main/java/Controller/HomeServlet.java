@@ -1,4 +1,4 @@
-package controller;
+package Controller;
 
 import Service.HomeService;
 import jakarta.servlet.http.*;

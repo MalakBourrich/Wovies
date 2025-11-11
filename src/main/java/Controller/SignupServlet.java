@@ -1,4 +1,4 @@
-package controller;
+package Controller;
 
 import Service.AccountService;
 import jakarta.servlet.http.*;
