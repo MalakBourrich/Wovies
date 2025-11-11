@@ -1,9 +1,5 @@
-package model;
+package Model;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Video {
     private int id;
     private String type;
@@ -13,7 +9,6 @@ public class Video {
     private String rating;
     private String imageUrl;
     private String link;
-
 
     public Video() {
     }
@@ -44,9 +39,6 @@ public class Video {
     }
 
     public String getRating() {
-        if( rating == "N/A" ){
-            return "*";
-        }
         return rating;
     }
     public void setRating(String rating) {
@@ -87,18 +79,7 @@ public class Video {
     public String getDescription() {
         return description;
     }
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Video video = (Video) o;
-        return id == video.id;
-    }
 
-    @Override
-    public int hashCode() {
-        return Integer.hashCode(id);
-    }
 
     String getDetails() {
         return "Video{" +

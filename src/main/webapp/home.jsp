@@ -29,7 +29,7 @@
                     </ul>
                 </div>
                 <div class="nav-right">
-                    <div class="search-box">
+                    <form action="search" method="get" class="search-box">
                         <i class="bi bi-search search-icon"></i>
                         <input type="text" class="search-input" placeholder="Search movies & series..." id="searchInput">
                     </div>
@@ -157,15 +157,6 @@
             }
         });
 
-        // Search functionality
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                var searchTerm = this.value.trim();
-                if (searchTerm) {
-                    window.location.href = 'search?q=' + encodeURIComponent(searchTerm);
-                }
-            }
-        });
 
         // Load all carousels
         loadCarousel('trendingCarousel', contentData.trending);

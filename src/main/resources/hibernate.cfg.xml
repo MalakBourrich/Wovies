@@ -18,7 +18,7 @@
         <mapping class="model.Account"/>
         <mapping class="model.History"/>
         <mapping class="model.Home"/>
-        <mapping class="model.WatchList"/>
+        <mapping class="Model.WatchListItem"/>
         <mapping class="model.Video"/>
         <mapping class="model.Movie"/>
         <mapping class="model.Server"/>

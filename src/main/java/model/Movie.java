@@ -1,35 +1,49 @@
 package model;
+import java.util.*;
 
-public class Movie {
+public class Movie extends Video {
     
-    String title;
-    String genre;
-    String imageUrl;
-    String description;
-    double rating;
-    String movieUrl;
-    int releaseYear;
+    private String movieUrl;
+    private String director;
+    private String genre;
+    private String duration;
+    private String ageRating;
+    List<Server> servers;
 
 
     public Movie() {
-        
+        super();
     }
 
-    public Movie(String title, String genre, String imageUrl, String description, double rating, String movieUrl, int releaseYear) {
-        this.title = title;
+    public Movie(Video video, String duration, String director, String genre, String movieUrl, String ageRating) {
+        super(video.getId(), video.getTitle(), video.getDescription(), video.getRating(), video.getImageUrl(), video.getLink(), video.getType(), video.getUplaodDate());
+        this.duration = duration;
+        this.director = director;
         this.genre = genre;
-        this.imageUrl = imageUrl;
-        this.description = description;
-        this.rating = rating;
         this.movieUrl = movieUrl;
-        this.releaseYear = releaseYear;
+        this.ageRating = ageRating;
     }
 
-    public String getTitle() {
-        return title;
+
+    public void addServer(Server server){
+        servers.add(server);
     }
-    public void setTitle(String title) {
-        this.title = title;
+    public List<Server> getServers(){
+        return servers;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
+    public String getDirector() {
+        return director;
+    }
+    public void setDirector(String director) {
+        this.director = director;
     }
 
     public String getGenre() {
@@ -39,27 +53,6 @@ public class Movie {
         this.genre = genre;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public double getRating() {
-        return rating;
-    }
-    public void setRating(double rating) {
-        this.rating = rating;
-    }
-
     public String getMovieUrl() {
         return movieUrl;
     }
@@ -67,11 +60,14 @@ public class Movie {
         this.movieUrl = movieUrl;
     }
 
-    public int getReleaseYear() {
-        return releaseYear;
+    public String getAgeRating() {
+        return ageRating;
     }
-    public void setReleaseYear(int releaseYear) {
-        this.releaseYear = releaseYear;
+    public void setAgeRating(String ageRating) {
+        this.ageRating = ageRating;
     }
-    
+
+    public String getMovieInfo() {
+        return "Movie: " + getTitle() + ", Duration: " + duration + ", Director: " + director + ", Genre: " + genre + ", Movie URL: " + movieUrl;
+    }
 }

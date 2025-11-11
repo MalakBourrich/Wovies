@@ -27,10 +27,11 @@
                     </ul>
                 </div>
                 <div class="nav-right">
-                    <div class="search-box">
+                    <form action="search" method="get" class="search-box">
                         <i class="bi bi-search search-icon"></i>
-                        <input type="text" class="search-input" placeholder="Search movies & series..." id="searchInput">
-                    </div>
+                        <input type="text" name="q" class="search-input" 
+                               placeholder="Search movies & series..." >
+                    </form>
                     <a href="account" class="btn-account">
                         <i class="bi bi-person-circle"></i>
                         <span>Account</span>

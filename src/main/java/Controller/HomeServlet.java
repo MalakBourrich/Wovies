@@ -1,4 +1,4 @@
-package Controller;
+package controller;
 
 import Service.HomeService;
 import jakarta.servlet.http.*;
@@ -6,7 +6,6 @@ import jakarta.servlet.annotation.*;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import model.Home;
-
 
 import java.io.IOException;
 
