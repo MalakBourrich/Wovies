@@ -3,9 +3,10 @@ package Service;
 
 import model.Video;
 import model.WatchListItem;
-import tempDAO.WatchListDAO;
 
 import java.util.List;
+
+import DAO.WatchListDAO;
 
 public class WatchListService {
     private WatchListDAO watchListDAO;

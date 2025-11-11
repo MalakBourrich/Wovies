@@ -1,4 +1,4 @@
-package tempDAO;
+package DAO;
 
 import Utility.HibernateUtil;
 import jakarta.persistence.EntityManager;

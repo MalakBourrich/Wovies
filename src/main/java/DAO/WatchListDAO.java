@@ -1,4 +1,4 @@
-package tempDAO;
+package DAO;
 
 import Util.HibernateUtil;
 import model.Movie;
