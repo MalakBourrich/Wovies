@@ -1,10 +1,11 @@
-package dao;
+package DAO;
 
-import Model.Video;
-import Model.Movie;
-import Model.Series;
-import Model.WatchListItem;
 import Util.HibernateUtil;
+import model.Movie;
+import model.Series;
+import model.Video;
+import model.WatchListItem;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

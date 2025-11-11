@@ -1,9 +1,6 @@
 package Service;
 
 import Utility.Constants;
-import Model.Video;
-import Model.Movie;
-import Model.Series;
 
 import java.io.IOException;
 import java.net.URI;
@@ -20,6 +17,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import jakarta.servlet.http.HttpSession;
+import model.Movie;
+import model.Series;
+import model.Video;
+
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;

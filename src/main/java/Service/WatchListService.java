@@ -1,11 +1,11 @@
 
 package Service;
 
-import Model.Video;
-import Model.WatchListItem;
-import dao.WatchListDAO;
-
 import java.util.List;
+
+import DAO.WatchListDAO;
+import model.Video;
+import model.WatchListItem;
 
 public class WatchListService {
     private WatchListDAO watchListDAO;

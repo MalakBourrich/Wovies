@@ -1,4 +1,4 @@
-package Model;
+package model;
 
 public class Episode extends Season{
     private int episodeNumber;
