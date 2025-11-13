@@ -1,76 +1,128 @@
 package Controller;
 
-import Service.HistoryService;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
-import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletException;
-import model.History;
-import model.Video;
-
+import Service.SearchService;
+import Service.HistoryListService;
 import java.io.IOException;
-
+import java.util.List;
+import jakarta.servlet.http.*;
+import model.Video;
+import model.HistoryItem;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.*;
 
 @WebServlet("/history")
 public class HistoryServlet extends HttpServlet {
-
-    private HistoryService historyService = new HistoryService();
+    private HistoryListService historyListService = new HistoryListService();
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("userId") == null) {
-            response.sendRedirect("login");
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession();
+        String userEmail = (String) session.getAttribute("email");
+        
+        if (userEmail == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
-        Integer userId = (Integer) request.getSession().getAttribute("userId");
-
-
-        History history = historyService.getHistoryByUserId(userId);
-
-        request.setAttribute("history", history);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("history.jsp");
-        dispatcher.forward(request, response);
+        
+        List<HistoryItem> history = historyListService.getHistoryByUserEmail(userEmail);
+        
+        // Apply filtering
+        String filter = request.getParameter("filter");
+        if (filter != null && !filter.isEmpty()) {
+            history = applyFilter(history, filter);
+        }
+        
+        // Apply sorting
+        String sort = request.getParameter("sort");
+        if (sort != null && !sort.isEmpty()) {
+            history = applySorting(history, sort);
+        }
+        
+        request.setAttribute("historyItems", history);
+        request.getRequestDispatcher("/history.jsp").forward(request, response);
+    }
+    
+    private List<HistoryItem> applyFilter(List<HistoryItem> history, String filter) {
+        switch (filter.toLowerCase()) {
+            case "movies":
+                history.removeIf(item -> "series".equalsIgnoreCase(item.getVideoType()));
+                break;
+            case "series":
+                history.removeIf(item -> !"series".equalsIgnoreCase(item.getVideoType()));
+                break;
+            case "unwatched":
+                history.removeIf(item -> item.isWatched());
+                break;
+            case "all":
+            default:
+                // Return all items
+                break;
+        }
+        return history;
+    }
+    
+    private List<HistoryItem> applySorting(List<HistoryItem> history, String sort) {
+        switch (sort.toLowerCase()) {
+            case "title":
+                history.sort((a, b) -> {
+                    String titleA = a.getVideoTitle() != null ? a.getVideoTitle() : "";
+                    String titleB = b.getVideoTitle() != null ? b.getVideoTitle() : "";
+                    return titleA.compareToIgnoreCase(titleB);
+                });
+                break;
+            case "rating":
+                history.sort((a, b) -> {
+                    Double ratingA = a.getVideoRating() != null ? Double.parseDouble(a.getVideoRating().toString()) : 0.0;
+                    Double ratingB = b.getVideoRating() != null ? Double.parseDouble(b.getVideoRating().toString()) : 0.0;
+                    return ratingB.compareTo(ratingA); // Descending order
+                });
+                break;
+            case "year":
+                history.sort((a, b) -> {
+                    Integer yearA = a.getVideoYear() != null ? Integer.parseInt(a.getVideoYear().toString()) : 0;
+                    Integer yearB = b.getVideoYear() != null ? Integer.parseInt(b.getVideoYear().toString()) : 0;
+                    return yearB.compareTo(yearA); // Descending order
+                });
+                break;
+            case "recent":
+            default:
+                history.sort((a, b) -> {
+                    if (a.getAddedDate() == null && b.getAddedDate() == null) return 0;
+                    if (a.getAddedDate() == null) return 1;
+                    if (b.getAddedDate() == null) return -1;
+                    return b.getAddedDate().compareTo(a.getAddedDate()); // Most recent first
+                });
+                break;
+        }
+        return history;
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("=== HistoryServlet doPost called ===");
-
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("userId") == null) {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession();
+        String userEmail = (String) session.getAttribute("email");
+        
+        if (userEmail == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Not authenticated");
             return;
         }
+        
         String action = request.getParameter("action");
-        int userId = (int) session.getAttribute("userId");
-
-        if ("remove".equals(action)) {
-            String videoIdStr = request.getParameter("videoId");
-            if (videoIdStr == null || videoIdStr.isEmpty()) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write("Video ID is required");
-                return;
+        String videoId = request.getParameter("videoId");
+        
+        if ("add".equals(action)) {
+            SearchService searchService = new SearchService(session);
+            if (searchService.getCurrentResults() == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }
-            try {
-                int videoId = Integer.parseInt(videoIdStr);
-                historyService.removeVideoFromHistory(userId, videoId);
-                response.setStatus(HttpServletResponse.SC_OK);
-                response.setContentType("text/plain");
-                response.getWriter().write("Video removed successfully");
-
-            }catch (NumberFormatException e) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write("Invalid video ID");
+            Video video = searchService.findVideoById(Integer.parseInt(videoId));
+            if(video != null){
+                historyListService.addItemToHistory(userEmail, video);
             }
-        } else if ("clear".equals(action)) {
-            historyService.clearUserHistory(userId);
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().write("History cleared successfully");
-        } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("Unknown action");
+        } else if ("remove".equals(action)) {
+            historyListService.removeItemFromHistory(userEmail, Integer.parseInt(videoId));
         }
-
+        
+        response.sendRedirect("history");
     }
 }
+

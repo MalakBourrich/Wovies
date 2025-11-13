@@ -16,6 +16,7 @@ public class HomeServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         Home home = homeService.getHomeData();
+
         request.setAttribute("home", home);
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("home.jsp");

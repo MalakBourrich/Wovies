@@ -1,9 +1,6 @@
 package model;
 
-import Service.HistoryService;
 import jakarta.persistence.*;
-
-import java.util.List;
 
 @Entity
 @Table(name = "account")
@@ -19,12 +16,12 @@ public class Account {
     private String email;
     @Column (nullable = false)
     private String password;
-    //@OneToOne
-    //@JoinColumn (name = "id_watch")
-    //private WatchList watchList;
+    @OneToOne
+    @JoinColumn (name = "id_watch")
+    private WatchListItem watchList;
     @OneToOne
     @JoinColumn (name = "id_history")
-    private History history;
+    private HistoryItem history;
 
     public Account() {}
     public Account(int id_user, String firstName, String lastName, String email, String password) {
@@ -66,10 +63,6 @@ public class Account {
     }
    public void getWatchList() {
    }
-   //public History getHistory() {
-     //   History history = getHistoryBy
-   //}
-
 
 
 }

@@ -11,10 +11,10 @@
     SearchService searchService = (SearchService) request.getAttribute("searchService");
     String error = (String) request.getAttribute("error");
     String email = (String) session.getAttribute("email");
-    // if (email == null) {
-    //     response.sendRedirect("login");
-    //     return;
-    // }
+    if (email == null) {
+        response.sendRedirect("login");
+        return;
+    }
 %>
 <html>
 <head>
@@ -31,9 +31,8 @@
                     <div class="logo" onclick="window.location.href='home'">WOVIES</div>
                     <ul class="nav-links">
                         <li><a href="home">Home</a></li>
-                        <li><a href="history">myHistory</a></li>
-                        <li><a href="watchlist">myWatchList</a></li>
-                        <li><a href="suggestions">browseSuggestions</a></li>
+                        <li><a href="history">History</a></li>
+                        <li><a href="watchlist">WatchList</a></li>
                     </ul>
                 </div>
                 <div class="nav-right">

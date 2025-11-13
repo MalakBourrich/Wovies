@@ -9,13 +9,14 @@
     String email = (String) session.getAttribute("email");
     Video video = (Video) request.getAttribute("video");
     String fromWatchList = (String) request.getAttribute("fromWatchList");
+    String fromHistory = (String) request.getAttribute("fromHistory");
     List<Server> servers = (List<Server>) request.getAttribute("servers");
     String currentServer = (String) request.getAttribute("currentServer");
     
-    // if (email == null) {
-    //     response.sendRedirect("login");
-    //     return;
-    // }
+    if (email == null) {
+        response.sendRedirect("login");
+        return;
+    }
     if (video == null) {
         response.sendRedirect("search?q=");
         return;
@@ -37,9 +38,8 @@
                     <div class="logo">WOVIES</div>
                     <ul class="nav-links">
                         <li><a href="home">Home</a></li>
-                        <li><a href="history">myHistory</a></li>
-                        <li><a href="watchlist">myWatchList</a></li>
-                        <li><a href="suggestions">browseSuggestions</a></li>
+                        <li><a href="history">History</a></li>
+                        <li><a href="watchlist">WatchList</a></li>
                     </ul>
                 </div>
                 <div class="nav-right">
@@ -118,6 +118,8 @@
                     <form action="watch" method="POST" class="server-grid">
                         <% if(fromWatchList != null && fromWatchList.equals("true")) { %>
                             <input type="hidden" name="watchListId" value="<%= video.getId() %>">
+                        <% }else if(fromHistory != null && fromHistory.equals("true")) { %>
+                            <input type="hidden" name="histoyId" value="<%= video.getId() %>">
                         <% } %>
                         <input type="hidden" name="videoId" value="<%= video.getId() %>">
                         <% if (servers != null) { 

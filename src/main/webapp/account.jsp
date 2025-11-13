@@ -23,8 +23,8 @@
                     <div class="logo" onclick="window.location.href='home'">WOVIES</div>
                     <ul class="nav-links">
                         <li><a href="home">Home</a></li>
-                        <li><a href="history">myHistory</a></li>
-                        <li><a href="watchlist">myWatchList</a></li>
+                        <li><a href="history">History</a></li>
+                        <li><a href="watchlist">WatchList</a></li>
                     </ul>
                 </div>
                 <div class="nav-right">

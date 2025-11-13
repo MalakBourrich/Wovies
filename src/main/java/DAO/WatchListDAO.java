@@ -1,6 +1,6 @@
 package DAO;
 
-import Util.HibernateUtil;
+import Utility.HibernateUtil;
 import model.Movie;
 import model.Series;
 import model.Video;

@@ -94,7 +94,7 @@ body {
     color: #fff;
     padding: 0.5rem 1rem 0.5rem 2.5rem;
     border-radius: 25px;
-    width: 250px;
+    width: 600px;
     transition: all 0.3s ease;
 }
 
@@ -103,7 +103,7 @@ body {
     border-color: #e50914;
     box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.1);
     outline: none;
-    width: 300px;
+    width: 650px;
 }
 
 .search-input::placeholder {
@@ -318,9 +318,13 @@ body {
 
 .content-poster {
     width: 100%;
-    aspect-ratio: 16/9;
+    aspect-ratio: 0.7;
     background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
     position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
 }
 
 .play-overlay {
@@ -338,6 +342,24 @@ body {
 }
 
 .content-card:hover .play-overlay {
+    opacity: 1;
+}
+
+/* Carousel item styles (use smaller poster cards than the hero) */
+.item {
+    flex: 0 0 220px; /* fixed card width */
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.item:hover .play-overlay,
+.content-poster:hover .play-overlay {
     opacity: 1;
 }
 

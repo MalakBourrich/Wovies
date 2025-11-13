@@ -5,7 +5,9 @@ import model.WatchListItem;
 import model.Series;
 import model.Server;
 import model.Movie;
+import model.HistoryItem;
 import Service.WatchService;
+import Service.HistoryListService;
 import Service.SearchService;
 import Service.WatchListService;
 import java.util.List;
@@ -18,10 +20,12 @@ import jakarta.servlet.ServletException;
 public class WatchServlet extends HttpServlet {
     
     private WatchListService watchlistService;
+    private HistoryListService historyListService;
     
     @Override
     public void init() {
         watchlistService = new WatchListService();
+        historyListService = new HistoryListService();
     }
     
     private Video findVideo(String videoId, HttpSession session) throws IOException {
@@ -52,6 +56,7 @@ public class WatchServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String videoId = request.getParameter("videoId");
         String watchListId = request.getParameter("watchListId");
+        String histoyId = request.getParameter("histoyId");
         String serverName = request.getParameter("server");
         String season = request.getParameter("season");
         String episode = request.getParameter("episode");
@@ -64,7 +69,11 @@ public class WatchServlet extends HttpServlet {
                 session.setAttribute("currentServer_WatchList_" + watchListId, serverName);
                 response.sendRedirect("watch?watchListId=" + watchListId);
                 return;
-            } else {
+            }else if(histoyId != null) {
+                session.setAttribute("currentServer_History_" + histoyId, serverName);
+                response.sendRedirect("watch?historyId=" + histoyId);
+                return;
+            }else {
                 session.setAttribute("currentServer_" + videoId, serverName);
             }
         }
@@ -84,18 +93,71 @@ public class WatchServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String videoId = request.getParameter("id");
         String watchListId = request.getParameter("watchListId");
+        String historyId = request.getParameter("historyId");
+        HttpSession session = request.getSession();
+        String userEmail = (String) session.getAttribute("email");
+        
+        if (userEmail == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
 
-
-        if(watchListId != null) {
+        if(historyId != null){
             // Handle access via watchlist ID
-            HttpSession session = request.getSession();
-            String userEmail = (String) session.getAttribute("email");
             
-            if (userEmail == null) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            List<HistoryItem> historylist = historyListService.getHistoryByUserEmail(userEmail);
+            HistoryItem targetItem = null;
+            for (HistoryItem item : historylist) {
+                if (String.valueOf(item.getId()).equals(historyId)) {
+                    targetItem = item;
+                    break;
+                }
+            }
+            
+            if (targetItem == null) {
+                response.sendRedirect("history");
                 return;
             }
             
+            Video video = new Video();
+            video.setId(targetItem.getId());
+            video.setLink(targetItem.getVideoLink());
+            video.setTitle(targetItem.getVideoTitle());
+            video.setImageUrl(targetItem.getImageUrl());
+            video.setType(targetItem.getVideoType());
+            video.setUplaodDate(targetItem.getVideoYear());
+            video.setRating(targetItem.getVideoRating());
+            video.setDescription(targetItem.getDescription());
+            if ("series".equals(video.getType())) {
+                Series series = new Series(video, targetItem.getNumberOfSeasons());
+                request.setAttribute("video", series);
+            } else if ("movie".equals(video.getType())) {
+                Movie movie = new Movie(video, null, null, null, null, null);
+                movie.setGenre(targetItem.getGenre());
+                movie.setDuration(targetItem.getDuration());
+                movie.setAgeRating(targetItem.getAgeRating());
+                request.setAttribute("video", movie);
+            } else {
+                request.setAttribute("video", video);
+            }
+            List<Server> servers = fetchServers(video);
+            request.setAttribute("servers", servers);
+            String currentServer = (String) session.getAttribute("currentServer_History_" + historyId);
+            if (currentServer == null) {
+                currentServer = getDefaultServer(servers);
+                if (currentServer != null) {
+                    session.setAttribute("currentServer_History_" + historyId, currentServer);
+                }
+            }
+            request.setAttribute("currentServer", currentServer);
+            request.setAttribute("fromHistory", "true");
+
+            request.getRequestDispatcher("watch.jsp").forward(request, response);
+            return;
+        }
+
+        if(watchListId != null) {
+            // Handle access via watchlist ID   
             List<WatchListItem> watchlist = watchlistService.getWatchListByUserEmail(userEmail);
             WatchListItem targetItem = null;
             for (WatchListItem item : watchlist) {
@@ -150,13 +212,16 @@ public class WatchServlet extends HttpServlet {
 
         // Handle normal video access by ID From Search
         
-        HttpSession session = request.getSession();
         Video video = findVideo(videoId, session);
         
         if (video == null) {
             response.sendRedirect("search?q=");
             return;
         }
+
+        HistoryListService historyListService = new HistoryListService();
+        historyListService.addItemToHistory(userEmail, video);
+
         
         boolean isSeries = video instanceof Series;
         List<Server> servers = fetchServers(video);

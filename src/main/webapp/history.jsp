@@ -1,15 +1,23 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page session="true" %>
+<%@ page import="model.HistoryItem" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.time.LocalDateTime" %>
 <%
     String email = (String) session.getAttribute("email");
     if (email == null) {
         response.sendRedirect("login");
         return;
     }
+    List<HistoryItem> historyItems = (List<HistoryItem>) request.getAttribute("historyItems");
+    int totalItems = historyItems != null ? historyItems.size() : 0;
+    
 %>
 <html>
 <head>
-    <title>Wovies - My History</title>
+    <title>Wovies - My history</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="css/history.css">
@@ -22,8 +30,8 @@
                     <div class="logo" onclick="window.location.href='home'">WOVIES</div>
                     <ul class="nav-links">
                         <li><a href="home">Home</a></li>
-                        <li><a href="history" class="active">myHistory</a></li>
-                        <li><a href="watchlist">myWatchList</a></li>
+                        <li><a href="history" class="active">History</a></li>
+                        <li><a href="watchlist">WatchList</a></li>
                     </ul>
                 </div>
                 <div class="nav-right">
@@ -43,8 +51,17 @@
 
     <div class="container content-wrapper">
         <div class="page-header">
-            <h1 class="page-title">My Watch History</h1>
-            <p class="page-subtitle">Track all the movies you've watched</p>
+            <div class="header-left">
+                <h1 class="page-title">
+                    <i class="bi bi-clock-history"></i>
+                    My history
+                </h1>
+                <p class="page-subtitle">Movies and series you watched</p>
+            </div>
+            <div class="stats-box">
+                <div class="stats-number" id="totalFavourites"><%= totalItems %></div>
+                <div class="stats-label">In history</div>
+            </div>
         </div>
 
         <div class="filter-bar">
@@ -54,261 +71,157 @@
                 <button class="filter-btn" onclick="filterFavourites('series')">Series</button>
                 <button class="filter-btn" onclick="filterFavourites('unwatched')">Unwatched</button>
             </div>
-            <button class="btn-clear-history" onclick="clearAllHistory()">
-                <i class="bi bi-trash"></i>
-                Clear History
-            </button>
+            <select class="sort-dropdown" id="sortSelect" onchange="sortFavourites()">
+                <option value="recent">Recently Added</option>
+                <option value="title">Title (A-Z)</option>
+                <option value="rating">Highest Rated</option>
+                <option value="year">Newest First</option>
+            </select>
         </div>
 
-        <div class="history-list" id="historyList">
-            <!-- History items will be loaded here -->
+        <div class="favourites-grid" id="favouritesGrid">
+            <%
+                if (historyItems != null && historyItems.size() > 0) {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
+                    for (HistoryItem item : historyItems) {
+                        String typeLabel = "series".equals(item.getVideoType()) ? "Series" : "Movie";
+                        String addedDate = item.getAddedDate() != null 
+                            ? dateFormat.format(item.getAddedDate()) 
+                            : "Unknown date";
+            %>
+                <div class="favourite-card">
+                    <div class="card-poster" <%
+                        if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
+                            out.print("style=\"background-image: url('" + item.getImageUrl() + "');\"");
+                        } else {
+                            out.print("style=\"background-color: #333;\"");
+                        }
+                    %>>
+                        <div class="card-overlay">
+                            <div class="overlay-actions">
+                                <button class="btn-overlay btn-play-overlay" 
+                                        onclick="watchContent('<%= item.getId() %>', event)">
+                                    <i class="bi bi-play-fill"></i> Watch
+                                </button>
+                                <button class="btn-overlay btn-remove-overlay" 
+                                        onclick="removeFromFavourites('<%= item.getId() %>', event)">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <h3 class="card-title"><%= item.getVideoTitle() != null ? item.getVideoTitle() : "Unknown Title" %></h3>
+                        <div class="card-meta">
+                            <span><%= item.getVideoYear() != null ? item.getVideoYear() : "N/A" %></span>
+                            <span>•</span>
+                            <span><%= item.getVideoType() %></span>
+                        </div>
+                        <div class="card-rating">
+                            <i class="bi bi-star-fill"></i>
+                            <span><%= item.getVideoRating() != null ? item.getVideoRating() : "N/A" %></span>
+                        </div>
+                        <div class="added-date">
+                            Added <%= addedDate %>
+                        </div>
+                    </div>
+                </div>
+            <%
+                    }
+                } else {
+            %>
+                <div class="empty-state" style="display: block; grid-column: 1 / -1;">
+                    <div class="empty-icon">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <h2 class="empty-title">Your history is Empty</h2>
+                    <p class="empty-text">Start by watching movies and series</p>
+                    <a href="home" class="btn-browse">Discover Content</a>
+                </div>
+            <%
+                }
+            %>
         </div>
 
         <div class="empty-state" id="emptyState" style="display: none;">
             <div class="empty-icon">
                 <i class="bi bi-clock-history"></i>
             </div>
-            <h2 class="empty-title">No Watch History</h2>
-            <p class="empty-text">Start watching movies and series to see your history here</p>
-            <a href="home" class="btn-browse">Browse Content</a>
+            <h2 class="empty-title">Your history is Empty</h2>
+            <p class="empty-text">Start adding movies and series you want to watch later</p>
+            <a href="home" class="btn-browse">Discover Content</a>
         </div>
     </div>
-    <%
-        model.History history = (model.History) request.getAttribute("history");
-        java.util.List<model.Video> videos = null;
-        if (history != null) {
-            videos = history.getWatched_list();
-        }
-    %>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        var historyData = [] ;
-
-        <% if(videos != null) {
-            for (model.Video video : videos) {
-
-        %>
-            historyData.push({
-                id: "<%= video.getId()%>",
-                title: "<%= video.getTitle()%>",
-                type: "<%= video.getType()%>",
-                year: "<%= video.getUplaodDate()%>",
-                description: "<%= video.getDescription()%>"
-
-            });
-        <% }
-            } %>
-
-        console.log("Loaded history data:" , historyData)
-        console.log("📊 Number of items:", historyData.length);
-
-        var currentFilter = 'all';
-
-        function formatDate(dateString) {
-            var date = new Date(dateString);
-            var today = new Date();
-            var yesterday = new Date(today);
-            yesterday.setDate(yesterday.getDate() - 1);
-
-            if (date.toDateString() === today.toDateString()) {
-                return 'Today';
-            } else if (date.toDateString() === yesterday.toDateString()) {
-                return 'Yesterday';
-            } else {
-                var options = { month: 'short', day: 'numeric', year: 'numeric' };
-                return date.toLocaleDateString('en-US', options);
-            }
-        }
-
-        function createHistoryItem(item) {
-            var historyItem = document.createElement('div');
-            historyItem.className = 'history-item';
-            historyItem.onclick = function() { continueWatching(item.id); };
-
-            var typeLabel = item.type === 'movie' ? 'Movie' : 'Series';
-
-            historyItem.innerHTML =
-                '<div class="history-thumbnail">' +
-                    '<div class="play-icon-small">' +
-                        '<i class="bi bi-play-fill"></i>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="history-details">' +
-                    '<div class="history-header">' +
-                        '<div>' +
-                            '<h3 class="history-title">' + item.title + '</h3>' +
-                            '<div class="history-meta">' +
-                                '<span><i class="bi bi-calendar"></i> ' + item.year + '</span>' +
-                                '<span><i class="bi bi-film"></i> ' + typeLabel+ '</span>' +
-                            '</div>' +
-                        '</div>' +
-                    '</div>' +
-                    '<p class="history-description">' + item.description + '</p>' +
-
-                    '<div class="history-actions">' +
-                        '<button class="btn-continue" onclick="continueWatching(\'' + item.id + '\', event)">' +
-                            '<i class="bi bi-play-circle"></i>  Watch' +
-                        '</button>' +
-                        '<button class="btn-remove" onclick="removeFromHistory(\'' + item.id + '\', event)">' +
-                            '<i class="bi bi-x-circle"></i> Remove' +
-                        '</button>' +
-                    '</div>' +
-                '</div>';
-
-            return historyItem;
-        }
-
-        function loadHistory(data) {
-            var historyList = document.getElementById('historyList');
-            var emptyState = document.getElementById('emptyState');
-
-            if (data.length === 0) {
-                historyList.style.display = 'none';
-                emptyState.style.display = 'block';
-            } else {
-                historyList.style.display = 'flex';
-                emptyState.style.display = 'none';
-                historyList.innerHTML = '';
-
-                data.forEach(function(item) {
-                    historyList.appendChild(createHistoryItem(item));
-                });
-            }
-        }
-
-        function filterHistory(type) {
-            currentFilter = type;
-
+        function filterFavourites(filterType) {
             // Update active filter button
             var filterBtns = document.querySelectorAll('.filter-btn');
             filterBtns.forEach(function(btn) {
                 btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            var filtered = historyData;
-
-            if (type === 'movies') {
-                filtered = historyData.filter(function(item) {
-                    return item.type === 'movie';
-                });
-            } else if (type === 'series') {
-                filtered = historyData.filter(function(item) {
-                    return item.type === 'series';
-                });
-            } else if (type === 'week') {
-                var weekAgo = new Date();
-                weekAgo.setDate(weekAgo.getDate() - 7);
-                filtered = historyData.filter(function(item) {
-                    return new Date(item.watchedDate) >= weekAgo;
-                });
-            } else if (type === 'month') {
-                var monthAgo = new Date();
-                monthAgo.setMonth(monthAgo.getMonth() - 1);
-                filtered = historyData.filter(function(item) {
-                    return new Date(item.watchedDate) >= monthAgo;
-                });
-            }
-
-            loadHistory(filtered);
-        }
-
-        function continueWatching(id, event) {
-            if (event) event.stopPropagation();
-            window.location.href = 'watch?id=' + id;
-        }
-
-        function removeFromHistory(id, event) {
-            event.stopPropagation();
-            if (confirm('Remove this item from your watch history?')) {
-                var button = event.target.closest('.btn-remove');
-                if (button) {
-                    button.disabled = true;
-                    button.innerHTML = '<i class="bi bi-hourglass-split"></i> Removing...';
+                if (btn.textContent.toLowerCase().replace(/\s+/g, '') === filterType.toLowerCase()) {
+                    btn.classList.add('active');
                 }
+            });
+            
+            // Get current sort parameter if exists
+            var sortParam = new URLSearchParams(window.location.search).get('sort') || '';
+            var href = '?filter=' + filterType;
+            if (sortParam) {
+                href += '&sort=' + sortParam;
+            }
+            window.location.href = href;
+        }
 
-                //  FormData to send in POST body
-                var formData = new URLSearchParams();
-                formData.append('action', 'remove');
-                formData.append('videoId', id);
+        function sortFavourites() {
+            var sortValue = document.getElementById('sortSelect').value;
+            var filterParam = new URLSearchParams(window.location.search).get('filter') || 'all';
+            window.location.href = '?filter=' + filterParam + '&sort=' + sortValue;
+        }
 
-                //  request to server to remove from database
-                fetch('history', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: formData.toString()
-                })
-                    .then(function(response) {
-                        if (response.ok) {
-                            // Remove from local array
-                            historyData = historyData.filter(function(item) {
-                                return item.id !== id;
-                            });
+        function watchContent(videoId, event) {
+            event.stopPropagation();
+            window.location.href = 'watch?historyId=' + encodeURIComponent(videoId);
+        }
 
-                            // Reload the filtered history
-                            var filtered = historyData;
-                            if (currentFilter === 'movies') {
-                                filtered = historyData.filter(function(item) {
-                                    return item.type === 'movie';
-                                });
-                            } else if (currentFilter === 'series') {
-                                filtered = historyData.filter(function(item) {
-                                    return item.type === 'series';
-                                });
-                            }
-                            loadHistory(filtered);
-                        } else {
-                            alert('Failed to remove video from history');
-                            // Re-enable button
-                            if (button) {
-                                button.disabled = false;
-                                button.innerHTML = '<i class="bi bi-x-circle"></i> Remove';
-                            }
-                        }
-                    })
-                    .catch(function(error) {
-                        console.error('Error:', error);
-                        alert('Error removing video from history');
-                        // Re-enable button
-                        if (button) {
-                            button.disabled = false;
-                            button.innerHTML = '<i class="bi bi-x-circle"></i> Remove';
-                        }
-                    });
+        function removeFromFavourites(videoId, event) {
+            event.stopPropagation();
+            if (confirm('Remove this from your history?')) {
+                // Create and submit form
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'history';
+                
+                var actionInput = document.createElement('input');
+                actionInput.type = 'hidden';
+                actionInput.name = 'action';
+                actionInput.value = 'remove';
+                
+                var linkInput = document.createElement('input');
+                linkInput.type = 'hidden';
+                linkInput.name = 'videoId';
+                linkInput.value = videoId;
+                
+                form.appendChild(actionInput);
+                form.appendChild(linkInput);
+                document.body.appendChild(form);
+                form.submit();
             }
         }
 
-        function clearAllHistory() {
-            if (confirm('Are you sure you want to clear your entire watch history? This action cannot be undone.')) {
-                var formData = new URLSearchParams();
-                formData.append('action', 'clear');
-
-                fetch('history', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: formData.toString()
-                })
-                    .then(function(response) {
-                        if (response.ok) {
-                            historyData = [];
-                            loadHistory(historyData);
-                        } else {
-                            alert('Failed to clear history');
-                        }
-                    })
-                    .catch(function(error) {
-                        console.error('Error:', error);
-                        alert('Error clearing history');
-                    });
-            }
-        }
-        // Load initial history
-        loadHistory(historyData);
+        // Set active filter button on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            var filterParam = new URLSearchParams(window.location.search).get('filter') || 'all';
+            var filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(function(btn) {
+                btn.classList.remove('active');
+                var btnFilter = btn.textContent.toLowerCase().replace(/\s+/g, '');
+                if (btnFilter === filterParam.toLowerCase().replace(/\s+/g, '')) {
+                    btn.classList.add('active');
+                }
+            });
+        });
     </script>
 </body>
 </html>

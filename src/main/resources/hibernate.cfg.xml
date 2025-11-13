@@ -14,13 +14,10 @@
         <!--  Création des tables automatiquement  -->
         <property name="hibernate.hbm2ddl.auto">update</property>
         <!--  Enregistrement des classes entités  -->
-        <!--  exemple  Entités   -->
         <mapping class="model.Account"/>
-        <mapping class="model.History"/>
         <mapping class="model.Home"/>
         <mapping class="model.WatchListItem"/>
-        <mapping class="model.Video"/>
-        <mapping class="model.Movie"/>
+        <mapping class="model.HistoryItem"/>
         <mapping class="model.Server"/>
     </session-factory>
 </hibernate-configuration>
