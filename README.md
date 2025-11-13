@@ -1,6 +1,6 @@
 # 🎬 Wovies
 
-**Wovies** is a school project — a complete movie and series streaming website — built with **Java (JSP/Servlets)**, **CSS**, and **Python** for API handling.  
+**Wovies** is a school project — a complete movie and series streaming website — built with **Java (JSP/Servlets)**, **CSS**, and **Jsoup** for API handling.  
 It integrates **Hibernate** (Jakarta architecture) and a **MySQL** database for persistent data management.  
 Although designed for academic purposes, the project is developed with the intent to be publishable and easily maintainable.
 
@@ -35,7 +35,7 @@ Wovies permet aux utilisateurs de :
 | Frontend | HTML, CSS, JSP |
 | Backend | Java 17 (Servlets, Jakarta EE), Hibernate |
 | Database | MySQL |
-| API | Python (IMDb API integration) |
+| API | JSoup (IMDb API integration) |
 | Server | Apache Tomcat |
 | IDE | IntelliJ IDEA |
 
