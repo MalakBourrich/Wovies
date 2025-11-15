@@ -4,6 +4,9 @@
 It integrates **Hibernate** (Jakarta architecture) and a **MySQL** database for persistent data management.  
 Although designed for academic purposes, the project is developed with the intent to be publishable and easily maintainable.
 
+<img width="944" height="445" alt="image" src="https://github.com/user-attachments/assets/3ed5f1b9-56de-4bd9-9ad6-a8447e1dc16c" />
+
+
 ---
 
 ## 🌍 Overview / Vue d’ensemble
@@ -50,3 +53,9 @@ Wovies permet aux utilisateurs de :
    git clone https://github.com/MalakBourrich/Wovies.git
    cd Wovies
 http://localhost:8080/Wovies
+2- **Hibernate  configuration**
+    change the database-name and make sure to enter your password for root in hibernate.cfg file 
+   
+3. **Home interface**
+  ```bash
+  run home.sql buy changing the database name to your wovies data base 
