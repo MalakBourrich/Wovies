@@ -56,7 +56,6 @@ http://localhost:8080/Wovies
 
 ---
 2- **Hibernate  configuration**
-   ```bash
     change the database-name and make sure to enter your password for root in hibernate.cfg file.
 
 ---
