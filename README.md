@@ -52,10 +52,13 @@ Wovies permet aux utilisateurs de :
    ```bash
    git clone https://github.com/MalakBourrich/Wovies.git
    cd Wovies
-http://localhost:8080/Wovies
+http://localhost:8080/Wovies 
+
+---
 2- **Hibernate  configuration**
-    change the database-name and make sure to enter your password for root in hibernate.cfg file 
-   
+    change the database-name and make sure to enter your password for root in hibernate.cfg file.
+
+---
 3. **Home interface**
   ```bash
   run home.sql buy changing the database name to your wovies data base 
